@@ -3,7 +3,7 @@ include(FetchContent)
 
 project(vulkan-starter-app LANGUAGES C CXX)
 
-add_executable(${PROJECT_NAME} source/main.cpp source/graphics_internal.cpp source/application.cpp)
+add_executable(${PROJECT_NAME} source/main.cpp source/graphics_internal.cpp source/application.cpp source/lighting.cpp)
 
 if(LINUX)
 	target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -Wno-missing-field-initializers)
@@ -105,7 +105,7 @@ if(GLSLC_FOUND)
 		add_custom_command(
 			OUTPUT ${SHADER_BINARY_PATH}
 			COMMAND "${GLSLC_FOUND}" ${SHADER_SOURCE} -o ${SHADER_BINARY_PATH}
-			DEPENDS ${SHADER_SOURCE}
+			DEPENDS ${SHADER_SOURCE} ${CMAKE_SOURCE_DIR}/shaders/scene.glsl ${CMAKE_SOURCE_DIR}/shaders/model.glsl
 			COMMENT "Compiling ${SHADER_FILE} shader"
 		)
 
@@ -117,6 +117,8 @@ if(GLSLC_FOUND)
 
 	compile_shader(cylinder.vert)
 	compile_shader(cylinder.frag)
+	compile_shader(marker.vert)
+	compile_shader(marker.frag)
 
 	add_custom_target(shaders DEPENDS ${_SHADER_BINARIES})
 	add_dependencies(${PROJECT_NAME} shaders)
